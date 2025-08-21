@@ -5,8 +5,6 @@ I have a working centralized wireless clients dashboard page that i want to shar
 
 ![Only wifi clients works for the moment](https://github.com/gorunul/owrt-controller-v1/blob/main/ss-wifi-clients-er.jpg)
 
-Main AP/Router:
-
 ```plaintext
 .
 ├── Main AP / Router
