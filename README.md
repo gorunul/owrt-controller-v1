@@ -7,33 +7,26 @@ I have a working centralized wireless clients dashboard page that i want to shar
 
 Main AP/Router:
 
-/
-
-|-- usr/
-
-|   |-- share/
-
-|       |-- luci/
-
-|           |-- menu.d/
-
-|               |-- luci-app-controller.json
-
-|-- www/
-
-    |-- cgi-bin/
-    
-    |   |-- get_clients
-    
-    |-- luci-static/
-    
-        |-- resources/
-        
-            |-- view/
-            
-                |-- controller/
-                
-                    |-- clients_dashboard.js
+```plaintext
+.
+├── AP_Principal/
+│   ├── usr/
+│   │   └── share/
+│   │       └── luci/
+│   │           └── menu.d/
+│   │               └── luci-app-controller.json
+│   └── www/
+│       ├── cgi-bin/
+│       │   └── get_clients
+│       └── luci-static/
+│           └── resources/
+│               └── view/
+│                   └── controller/
+│                       └── clients_dashboard.js
+└── AP_Secundar/
+    └── usr/
+        └── bin/
+            └── report_clients.sh
                     
 
 
