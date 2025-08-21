@@ -1,7 +1,7 @@
 # owrt-controller-v1
 Openwrt wifi clients dashboard
 
-I have a working centralized wireless clients dashboard page that i want to share with you. The controller should be any openwrt device, while the other ap's from your network will pass data to the controller.
+I have a working centralized wireless clients dashboard page that i use at my work and i want to share it with you. The controller should be any openwrt device, while the other ap's from your network will pass data to the controller.
 All my ap at work are dumb ap's with vlans for office and guests and management. As long are your ap's are on the LAN side of your main ap and you can ping from each other, the scripts should work.
 
 ![Only wifi clients works for the moment](https://github.com/gorunul/owrt-controller-v1/blob/main/ss-wifi-clients-er.jpg)
@@ -45,7 +45,7 @@ Have fun!
 
 
 
-Future steps:
+Future steps (i hope before Star Citizen going to beta):
 - convert to C
 - push configs to slave ap's ( i personaly need vlans management for all slaves from a single device and wifi configs for the moment)
 - push 802.11kv data to slave ap's 
