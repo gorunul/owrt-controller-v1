@@ -21,7 +21,7 @@ I have a working centralized wireless clients dashboard page that i want to shar
 │               └── view/
 │                   └── controller/
 │                       └── clients_dashboard.js
-└── AP Slaves
+└── AP Slaves (you can use the script on main ap if it has wireless )
     └── usr/
         └── bin/
             └── report_clients.sh
