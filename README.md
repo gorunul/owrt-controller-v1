@@ -45,7 +45,7 @@ Have fun!
 
 
 
-Future steps (i hope before Star Citizen going to beta):
+Future steps (with a bit of luck before Star Citizen going to beta):
 - convert to C
 - push configs to slave ap's ( i personaly need vlans management for all slaves from a single device and wifi configs for the moment)
 - push 802.11kv data to slave ap's 
