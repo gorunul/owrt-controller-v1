@@ -46,7 +46,7 @@ Have fun!
 
 
 
-Dreaming at future steps:
+Future steps:
 - convert to C
 - push configs to slave ap's (vlans and wifi configs)
 - push 802.11kv data to slave ap's 
