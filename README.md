@@ -47,6 +47,6 @@ Have fun!
 
 Future steps:
 - convert to C
-- push configs to slave ap's ( i personaly need vlans management for all slaves from a single device and wifi configs for the moment)
+- push configs to slave ap's (vlans and wifi configs)
 - push 802.11kv data to slave ap's 
 - device adoption like on Ubiquity, TPlink, Grandstream
