@@ -1,0 +1,85 @@
+#!/bin/sh
+
+MY_AP_NAME=$(uci -q get system.@system[0].hostname)
+#Specify the wifi interfaces to monitor
+INTERFACES_TO_CHECK="2g-work 5g-work 2g-guests"
+
+if [ "$REQUEST_METHOD" = "POST" ]; then
+    post_data=$(cat)
+    REMOTE_ID=${REMOTE_HOST:-$REMOTE_ADDR}
+    echo "{\"ap_ip\":\"$REMOTE_ADDR\", \"data\":$post_data}" > "/tmp/remote_clients.json.$REMOTE_ID"
+    echo "Status: 200 OK"; echo "Content-Type: text/plain"; echo ""; echo "Data received."
+    exit 0
+fi
+
+DEDUPLICATED_JSON=$( \
+    (
+        for iface in $INTERFACES_TO_CHECK; do
+            if [ ! -d "/sys/class/net/$iface" ]; then continue; fi
+
+            BAND="N/A"
+            FREQ_MHZ=$(iw dev "$iface" info | sed -n 's/.*(\([0-9]\{4\}\) MHz).*/\1/p' | head -n 1)
+            if [ -n "$FREQ_MHZ" ]; then
+                if [ "$FREQ_MHZ" -gt 3000 ]; then BAND="5G"; else BAND="2.4G"; fi
+            fi
+
+            SSID_NAME="($iface)"
+            SECTION_ID=$(uci show wireless | grep "\.ifname='$iface'" | sed 's/\.ifname=.*//')
+            if [ -n "$SECTION_ID" ]; then
+                SSID_NAME=$(uci -q get "${SECTION_ID}.ssid" || echo "($iface)")
+            fi
+
+            iw dev "$iface" station dump | awk -v ap_name="$MY_AP_NAME" -v iface_name="$iface" -v band="$BAND" -v ssid="$SSID_NAME" '
+                BEGIN { RS = "\nStation"; FS = "\n"; }
+                {
+                    if (NR == 1 && $0 !~ /signal:/) { next }
+                    mac = sig = rx = tx = "";
+                    conn_time = rx_bytes = tx_bytes = 0;
+                    mac = $1;
+                    sub(/^Station /, "", mac); sub(/^[ \t]+/, "", mac); sub(/ \(on.*\)/, "", mac);
+
+                    for (i=2; i<=NF; i++) {
+                        if ($i ~ /signal:/) { sig = $i; sub(/^.*signal:[\t ]*/, "", sig); sub(/ .*/, "", sig); sig = sig " dBm"; }
+                        if ($i ~ /rx bitrate:/) { rx = $i; sub(/^.*rx bitrate:[\t ]*/, "", rx); sub(/ .*/, "", rx); sub(/\..*/, "", rx); rx = rx "Mbps"; }
+                        if ($i ~ /tx bitrate:/) { tx = $i; sub(/^.*tx bitrate:[\t ]*/, "", tx); sub(/ .*/, "", tx); sub(/\..*/, "", tx); tx = tx "Mbps"; }
+                        if ($i ~ /connected time:/) { conn_time = $i; sub(/^.*connected time:[\t ]*/, "", conn_time); sub(/ .*/, "", conn_time); }
+                        if ($i ~ /rx bytes:/) { rx_bytes = $i; sub(/^.*rx bytes:[\t ]*/, "", rx_bytes); }
+                        if ($i ~ /tx bytes:/) { tx_bytes = $i; sub(/^.*tx bytes:[\t ]*/, "", tx_bytes); }
+                    }
+
+                    if (mac != "") {
+                        gsub(/\t/, "", mac); gsub(/\t/, "", sig); gsub(/\t/, "", rx); gsub(/\t/, "", tx);
+                        printf "{\"mac\":\"%s\", \"ssid\":\"%s\", \"signal\":\"%s\", \"conn_time\":%s, \"rx_rate\":\"%s\", \"tx_rate\":\"%s\", \"total_data\":%d, \"ap\":\"%s\", \"iface\":\"%s\", \"band\":\"%s\"}\n", \
+                        mac, ssid, sig, conn_time, rx, tx, (rx_bytes+tx_bytes), ap_name, iface_name, band;
+                    }
+                }
+            '
+        done
+
+        find /tmp/ -name 'remote_clients.json.*' -mmin -3 -type f -print0 | while IFS= read -r -d $'\0' remote_file; do
+            [ -f "$remote_file" ] || continue
+            cat "$remote_file" | sed 's/^{"ap_ip":"[0-9.]*", "data":\[//; s/\]}$//' | sed 's/},{/}\n{/g'
+        done
+
+    ) | awk '
+        BEGIN { FS="\"" }
+        !seen[$4]++ {
+            mac = $4;
+            clients[mac] = $0
+        }
+        END {
+            printf "["; comma = "";
+            for (mac in clients) {
+                if (clients[mac] != "") {
+                    printf "%s%s", comma, clients[mac];
+                    comma = ",";
+                }
+            }
+            printf "]";
+        }
+    '
+)
+
+echo "Content-Type: application/json"
+echo ""
+echo "$DEDUPLICATED_JSON"
