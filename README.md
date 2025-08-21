@@ -38,6 +38,8 @@ AP Slaves:
 * chmod +x /usr/bin/report_clients.sh
 * #crontab -e and add * * * * * /usr/bin/report_clients.sh
 
+You should see on the main ap a new menu named Controller with an item named Wifi Clients. There you should see their statistics, filter by ssid, mac, etc...
+
        
 Have fun!
 
