@@ -2,6 +2,7 @@
 Openwrt wifi clients dashboard
 
 I have a working centralized wireless clients dashboard page that i want to share with you. The controller should be any openwrt device, while the other ap's from your network will pass data to the controller.
+All my ap at work are dumb ap's with vlans for office and guests and management. As long are your ap's are on the LAN side of your main ap and you can ping from each other, the scripts should work.
 
 ![Only wifi clients works for the moment](https://github.com/gorunul/owrt-controller-v1/blob/main/ss-wifi-clients-er.jpg)
 
@@ -21,19 +22,22 @@ I have a working centralized wireless clients dashboard page that i want to shar
 │               └── view/
 │                   └── controller/
 │                       └── clients_dashboard.js
-└── AP Slaves (you can use the script on main ap too if it has wireless )
+└── AP Slaves
     └── usr/
         └── bin/
             └── report_clients.sh
 
+After copying the files on that specific locations you will need to:
 
-After copying the files you will need to give execute permissions to the following files :
-- Main AP: chmod +x /www/cgi-bin/get_clients
-- AP Slaves : chmod +x /usr/bin/report_clients.sh
+Main AP:
+* edit /www/cgi-bin/get_clients and specify the interfaces to check
+* chmod +x /www/cgi-bin/get_clients
 
-And last, you need the slaves to run the report_clients.sh script each minute (or more):
-#crontab -e
-* * * * * /usr/bin/report_clients.sh
+AP Slaves:
+* edit /usr/bin/report_clients.sh and specify the interfaces to check and the ip address of the main ap
+* chmod +x /usr/bin/report_clients.sh
+* #crontab -e and add * * * * * /usr/bin/report_clients.sh
+
        
 Have fun!
 
