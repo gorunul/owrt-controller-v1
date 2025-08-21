@@ -8,19 +8,33 @@ I have a working centralized wireless clients dashboard page that i want to shar
 Main AP/Router:
 
 /
+
 |-- usr/
+
 |   |-- share/
+
 |       |-- luci/
+
 |           |-- menu.d/
+
 |               |-- luci-app-controller.json
+
 |-- www/
+
     |-- cgi-bin/
+    
     |   |-- get_clients
+    
     |-- luci-static/
+    
         |-- resources/
+        
             |-- view/
+            
                 |-- controller/
+                
                     |-- clients_dashboard.js
+                    
 
 
 AP Slaves (you can use it on the main ap/router too):
