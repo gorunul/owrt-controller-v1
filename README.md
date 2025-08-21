@@ -9,7 +9,7 @@ Main AP/Router:
 
 ```plaintext
 .
-├── AP_Principal/
+├── Main AP / Router
 │   ├── usr/
 │   │   └── share/
 │   │       └── luci/
@@ -23,19 +23,11 @@ Main AP/Router:
 │               └── view/
 │                   └── controller/
 │                       └── clients_dashboard.js
-└── AP_Secundar/
+└── AP Slaves
     └── usr/
         └── bin/
             └── report_clients.sh
-                    
 
-
-AP Slaves (you can use it on the main ap/router too):
-
-/
-|-- usr/
-    |-- bin/
-        |-- report_clients.sh
 
 After copying the files you will need to give execute permissions to the following files :
 - Main AP: chmod +x /www/cgi-bin/get_clients
